@@ -1,7 +1,4 @@
-class Point(my_x: Double, my_y: Double) {
-  val x = my_x
-  val y = my_y
-
+@serializable case class Point(val x: Double, val y: Double) {
   def + (that: Point) = new Point(this.x + that.x, this.y + that.y)
   def - (that: Point) = this + (-that)
   def unary_- () = new Point(-this.x, -this.y)
