@@ -1,7 +1,14 @@
+import scala.io.Source
+
 object LocalKMeans {
   def main(args: Array[String]) {
-    val points = Array.fill(1000000) { Point.random }
-    val centroids = Array.fill(3) { Point.random }
+    val points = Source.fromFile(args(0)).getLines.toSeq.filter(line => !line.matches("^\\s*#.*")).map(line => {
+	  val parts = line.split("\t").map(_.toDouble)
+	  new Point(parts(0), parts(1))}).toArray
+
+	println("Got " + points.length + " points.")
+
+    val centroids = Array.fill(args(1).toInt) { Point.random }
     val resultCentroids = kmeans(points, centroids, 0.1)
     println(resultCentroids)
   }
@@ -17,15 +24,19 @@ object LocalKMeans {
 			b))
 
 	// Calculate new centroids as the average of the points in their cluster
-    val newCentroids = pointGroups.map({
-      case (centroid, pts) => pts.reduceLeft(_ + _) / pts.length}).toSeq
+	// (or leave them alone if they don't have any points in their cluster)
+    val newCentroids = centroids.map(oldCentroid => {
+	  val closestPoints = pointGroups.getOrElse(oldCentroid, List())
+	  if (closestPoints.length > 0)
+		closestPoints.reduceLeft(_ + _) / closestPoints.length
+	  else
+		oldCentroid
+	})
 
 	// Calculate the centroid movement
-    val movement = (pointGroups zip newCentroids).map({
-      case ((oldCentroid, pts), newCentroid) => oldCentroid distance newCentroid
-    })
+    val movement = (centroids zip newCentroids).map({ case (a, b) => a distance b })
 
-    println(newCentroids)
+    println(newCentroids + ", delta: " + movement.map(d => "%3f".format(d)).mkString("(", ", ", ")"))
 
 	// Repeat if movement exceeds threshold
     if (movement.exists(_ > epsilon))
@@ -34,25 +45,4 @@ object LocalKMeans {
       return newCentroids
   }
 
-}
-
-class Point(my_x: Double, my_y: Double) {
-  val x = my_x
-  val y = my_y
-
-  def + (that: Point) = new Point(this.x + that.x, this.y + that.y)
-  def - (that: Point) = this + (-that)
-  def unary_- () = new Point(-this.x, -this.y)
-  def / (d: Double) = new Point(this.x / d, this.y / d)
-  def magnitude = math.sqrt(x * x + y * y)
-  def distance(that: Point) = (that - this).magnitude
-  override def toString = format("(%.2f,%.2f)", x, y)
-}
-
-object Point {
-  def random() = {
-    new Point(
-      math.random * 50,
-      math.random * 50)
-  }
 }
