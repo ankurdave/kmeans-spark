@@ -26,7 +26,7 @@ object LocalKMeans {
   }
 
   def kmeans(points: Seq[Point], centroids: Seq[Point], epsilon: Double): Seq[Point] = {
-	// Assign points to centroids
+    // Assign points to centroids
     val clusters = points.groupBy(KMeansHelper.closestCentroid(centroids, _))
 
     // Recalculate centroids as the average of the points in their cluster
@@ -37,14 +37,14 @@ object LocalKMeans {
         case None => oldCentroid
       }})
 
-	// Calculate the centroid movement for the stopping condition
+    // Calculate the centroid movement for the stopping condition
     val movement = (centroids zip newCentroids).map({ case (a, b) => a distance b })
 
     println("Centroids changed by\n" +
             "\t   " + movement.map(d => "%3f".format(d)).mkString("(", ", ", ")") + "\n" +
             "\tto " + newCentroids.mkString("(", ", ", ")"))
 
-	// Iterate if movement exceeds threshold
+    // Iterate if movement exceeds threshold
     if (movement.exists(_ > epsilon))
       kmeans(points, newCentroids, epsilon)
     else
