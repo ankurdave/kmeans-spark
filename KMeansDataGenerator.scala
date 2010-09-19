@@ -2,6 +2,11 @@ import scala.util.Random
 
 object KMeansDataGenerator {
   def main(args: Array[String]) {
+    if (args.length < 3) {
+      System.err.println("Usage: KMeansDataGenerator <numClusters> <numPoints> <pointSpread>")
+      System.exit(-1)
+    }
+
 	val numClusters = args(0).toInt
 	val desiredCentroids = Array.fill(numClusters) { Point.random }
 	desiredCentroids.foreach(p => printf("#%f\t%f\n", p.x, p.y))

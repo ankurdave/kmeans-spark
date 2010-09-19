@@ -1,0 +1,4 @@
+#!/bin/bash
+
+cd /home/ankur/bin/spark
+./run $@

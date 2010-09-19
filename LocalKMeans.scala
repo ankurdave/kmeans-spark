@@ -2,47 +2,52 @@ import scala.io.Source
 
 object LocalKMeans {
   def main(args: Array[String]) {
-    val points = Source.fromFile(args(0)).getLines.toSeq.filter(line => !line.matches("^\\s*#.*")).map(line => {
-	  val parts = line.split("\t").map(_.toDouble)
-	  new Point(parts(0), parts(1))}).toArray
+    if (args.length < 2) {
+      System.err.println("Usage: LocalKMeans <pointsFile> <numClusters>")
+      System.exit(-1)
+    }
 
-	println("Got " + points.length + " points.")
+    // Parse the points from a file into an array
+    val points = Source.fromFile(args(0)).getLines.toSeq.filter(line => !line.matches("^\\s*#.*")).map(
+      line => {
+        val parts = line.split("\t").map(_.toDouble)
+        new Point(parts(0), parts(1))
+      }
+    ).toArray
+    println("Read " + points.length + " points.")
 
+    // Initialize k random centroids
     val centroids = Array.fill(args(1).toInt) { Point.random }
+
+    // Start the local run
     val resultCentroids = kmeans(points, centroids, 0.1)
-    println(resultCentroids)
+
+    println("Final centroids: " + resultCentroids)
   }
 
   def kmeans(points: Seq[Point], centroids: Seq[Point], epsilon: Double): Seq[Point] = {
-	// Group points by the nearest centroids
-    val pointGroups = points.groupBy(
-	  point => centroids.reduceLeft(
-		(a, b) =>
-		  if ((point distance a) < (point distance b))
-			a
-		  else
-			b))
+	// Assign points to centroids
+    val clusters = points.groupBy(KMeansHelper.closestCentroid(centroids, _))
 
-	// Calculate new centroids as the average of the points in their cluster
-	// (or leave them alone if they don't have any points in their cluster)
+    // Recalculate centroids as the average of the points in their cluster
+    // (or leave them alone if they don't have any points in their cluster)
     val newCentroids = centroids.map(oldCentroid => {
-	  val closestPoints = pointGroups.getOrElse(oldCentroid, List())
-	  if (closestPoints.length > 0)
-		closestPoints.reduceLeft(_ + _) / closestPoints.length
-	  else
-		oldCentroid
-	})
+      clusters.get(oldCentroid) match {
+        case Some(pointsInCluster) => pointsInCluster.reduceLeft(_ + _) / pointsInCluster.length
+        case None => oldCentroid
+      }})
 
-	// Calculate the centroid movement
+	// Calculate the centroid movement for the stopping condition
     val movement = (centroids zip newCentroids).map({ case (a, b) => a distance b })
 
-    println(newCentroids + ", delta: " + movement.map(d => "%3f".format(d)).mkString("(", ", ", ")"))
+    println("Centroids changed by\n" +
+            "\t   " + movement.map(d => "%3f".format(d)).mkString("(", ", ", ")") + "\n" +
+            "\tto " + newCentroids.mkString("(", ", ", ")"))
 
-	// Repeat if movement exceeds threshold
+	// Iterate if movement exceeds threshold
     if (movement.exists(_ > epsilon))
       kmeans(points, newCentroids, epsilon)
     else
       return newCentroids
   }
-
 }
