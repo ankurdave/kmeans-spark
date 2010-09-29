@@ -14,7 +14,7 @@ object LocalKMeans {
         new Point(parts(0), parts(1))
       }
     ).toArray
-    println("Read " + points.length + " points.")
+    System.err.println("Read " + points.length + " points.")
 
     // Initialize k random centroids
     val centroids = Array.fill(args(1).toInt) { Point.random }
@@ -22,7 +22,8 @@ object LocalKMeans {
     // Start the local run
     val resultCentroids = kmeans(points, centroids, 0.1)
 
-    println("Final centroids: " + resultCentroids)
+    System.err.println("Final centroids: ")
+	println(resultCentroids.map(centroid => "%3f\t%3f\n".format(centroid.x, centroid.y)).mkString)
   }
 
   def kmeans(points: Seq[Point], centroids: Seq[Point], epsilon: Double): Seq[Point] = {
@@ -40,7 +41,7 @@ object LocalKMeans {
     // Calculate the centroid movement for the stopping condition
     val movement = (centroids zip newCentroids).map({ case (a, b) => a distance b })
 
-    println("Centroids changed by\n" +
+    System.err.println("Centroids changed by\n" +
             "\t   " + movement.map(d => "%3f".format(d)).mkString("(", ", ", ")") + "\n" +
             "\tto " + newCentroids.mkString("(", ", ", ")"))
 
