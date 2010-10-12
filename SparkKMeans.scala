@@ -8,7 +8,7 @@ object SparkKMeans {
       System.exit(-1)
     }
 
-	val sc = new SparkContext(args(2), "SparkKMeans")
+    val sc = new SparkContext(args(2), "SparkKMeans")
 
     // Parse the points from a file into an array
     // TODO: Use an HDFS file
@@ -17,7 +17,7 @@ object SparkKMeans {
         val parts = line.split("\t").map(_.toDouble)
         new Point(parts(0), parts(1))
       }
-    )
+    ).cache
     System.err.println("Read " + points.count() + " points.")
 
     // Initialize k random centroids
@@ -27,20 +27,20 @@ object SparkKMeans {
     val resultCentroids = kmeans(points, centroids, 0.1, sc, args(3).toInt)
 
     System.err.println("Final centroids: ")
-	println(resultCentroids.map(centroid => "%3f\t%3f\n".format(centroid.x, centroid.y)).mkString)
+    println(resultCentroids.map(centroid => "%3f\t%3f\n".format(centroid.x, centroid.y)).mkString)
   }
 
-  def kmeans(points: Seq[Point], centroids: Seq[Point], epsilon: Double, sc: SparkContext, slices: Int): Seq[Point] = {
+  def kmeans(points: spark.MappedRDD[Point,String], centroids: Seq[Point], epsilon: Double, sc: SparkContext, slices: Int): Seq[Point] = {
     // Partition work
     val partitions = sc.parallelize(points.grouped(points.length / slices).toSeq, slices).cache
 
     // Assign points to centroids and compute partial sums (on the workers), then merge the partial sums into one sum per centroid
-    val sums = partitions.map(
+    val sums = points.map(
       pointPartition => pointPartition.groupBy(KMeansHelper.closestCentroid(centroids, _)).mapValues(partialSumOfPoints)
     ).reduce((mapA, mapB) => mergeMaps(List(mapA, mapB)) {
-	  case ((pointTotal1, numPoints1), (pointTotal2, numPoints2)) =>
+      case ((pointTotal1, numPoints1), (pointTotal2, numPoints2)) =>
         (pointTotal1 + pointTotal2, numPoints1 + numPoints2)
-	})
+    })
 
     // Recalculate centroids as the average of the points in their cluster
     // (or leave them alone if they don't have any points in their cluster)
@@ -49,7 +49,7 @@ object SparkKMeans {
         case Some((pointTotal, numPoints)) => pointTotal / numPoints
         case None => oldCentroid
       }
-	})
+    })
 
     // Calculate the centroid movement for the stopping condition
     val movement = (centroids zip newCentroids).map({ case (a, b) => a distance b })
