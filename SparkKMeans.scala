@@ -8,39 +8,39 @@ object SparkKMeans {
       System.exit(-1)
     }
 
+	val sc = new SparkContext(args(2), "SparkKMeans")
+
     // Parse the points from a file into an array
     // TODO: Use an HDFS file
-    val points = Source.fromFile(args(0)).getLines.toSeq.filter(line => !line.matches("^\\s*#.*")).map(
+    val points = sc.textFile(args(0)).filter(line => !line.matches("^\\s*#.*")).map(
       line => {
         val parts = line.split("\t").map(_.toDouble)
         new Point(parts(0), parts(1))
       }
-    ).toArray
-    println("Read " + points.length + " points.")
+    )
+    System.err.println("Read " + points.count() + " points.")
 
     // Initialize k random centroids
     val centroids = Array.fill(args(1).toInt) { Point.random }
 
     // Start the Spark run
-    val resultCentroids = kmeans(points, centroids, 0.1, new SparkContext(args(2), "SparkKMeans"), args(3).toInt)
+    val resultCentroids = kmeans(points, centroids, 0.1, sc, args(3).toInt)
 
-    println("Final centroids: " + resultCentroids)
+    System.err.println("Final centroids: ")
+	println(resultCentroids.map(centroid => "%3f\t%3f\n".format(centroid.x, centroid.y)).mkString)
   }
 
   def kmeans(points: Seq[Point], centroids: Seq[Point], epsilon: Double, sc: SparkContext, slices: Int): Seq[Point] = {
     // Partition work
-    val partitions = sc.parallelize(points.grouped(points.length / slices).toSeq, slices)
+    val partitions = sc.parallelize(points.grouped(points.length / slices).toSeq, slices).cache
 
-    // On the workers, assign points to centroids and return partial sums
-    val partialSums = partitions.map(
+    // Assign points to centroids and compute partial sums (on the workers), then merge the partial sums into one sum per centroid
+    val sums = partitions.map(
       pointPartition => pointPartition.groupBy(KMeansHelper.closestCentroid(centroids, _)).mapValues(partialSumOfPoints)
-    ).toArray // Aggregate the results and bring them back to the driver program
-
-    // Aggregate the worker results
-    val sums = mergeMaps(partialSums) {
-      case ((pointTotal1, numPoints1), (pointTotal2, numPoints2)) =>
+    ).reduce((mapA, mapB) => mergeMaps(List(mapA, mapB)) {
+	  case ((pointTotal1, numPoints1), (pointTotal2, numPoints2)) =>
         (pointTotal1 + pointTotal2, numPoints1 + numPoints2)
-    }
+	})
 
     // Recalculate centroids as the average of the points in their cluster
     // (or leave them alone if they don't have any points in their cluster)
@@ -48,12 +48,13 @@ object SparkKMeans {
       sums.get(oldCentroid) match {
         case Some((pointTotal, numPoints)) => pointTotal / numPoints
         case None => oldCentroid
-      }})
+      }
+	})
 
     // Calculate the centroid movement for the stopping condition
     val movement = (centroids zip newCentroids).map({ case (a, b) => a distance b })
 
-    println("Centroids changed by\n" +
+    System.err.println("Centroids changed by\n" +
             "\t   " + movement.map(d => "%3f".format(d)).mkString("(", ", ", ")") + "\n" +
             "\tto " + newCentroids.mkString("(", ", ", ")"))
 
