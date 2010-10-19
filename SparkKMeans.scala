@@ -33,7 +33,7 @@ object SparkKMeans {
 
     // On the workers, assign points to centroids and return partial sums
     val partialSums = partitions.map(
-      pointPartition => pointPartition.groupBy(KMeansHelper.closestCentroid(centroids, _)).mapValues(partialSumOfPoints)
+      pointPartition => pointPartition.groupBy(KMeansHelper.closestCentroid(centroids, _)).mapValues(partialSumOfPoints).toMap
     ).toArray // Aggregate the results and bring them back to the driver program
 
     // Aggregate the worker results
