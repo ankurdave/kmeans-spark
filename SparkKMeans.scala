@@ -1,5 +1,4 @@
 import scala.io.Source
-import spark.SparkContext
 import spark._
 
 object SparkKMeans {
