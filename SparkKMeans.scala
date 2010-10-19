@@ -1,5 +1,6 @@
 import scala.io.Source
 import spark.SparkContext
+import spark._
 
 object SparkKMeans {
   def main(args: Array[String]) {
@@ -29,8 +30,8 @@ object SparkKMeans {
     println(resultCentroids.map(centroid => "%3f\t%3f\n".format(centroid.x, centroid.y)).mkString)
   }
 
-  def kmeans(points: spark.MappedRDD[Point,String], centroids: Seq[Point], epsilon: Double, sc: SparkContext): Seq[Point] = {
-    val clusters = points.map(point => KMeansHelper.closestCentroid(centroids, point) -> point).reduceByKey((pointA, pointB) => (pointA + pointB) / 2)
+  def kmeans(points: spark.RDD[Point], centroids: Seq[Point], epsilon: Double, sc: SparkContext): Seq[Point] = {
+    val clusters = new PairRDDExtras(points.map(point => KMeansHelper.closestCentroid(centroids, point) -> point)).reduceByKey((pointA, pointB) => (pointA + pointB) / 2)
 
     // Recalculate centroids based on their clusters
     // (or leave them alone if they don't have any points in their cluster)
@@ -52,6 +53,6 @@ object SparkKMeans {
     if (movement.exists(_ > epsilon))
       kmeans(points, newCentroids, epsilon, sc)
     else
-      return newCentroids.collect()
+      return newCentroids
   }
 }
