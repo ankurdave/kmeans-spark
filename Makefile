@@ -1,5 +1,5 @@
 export SPARK_PROJECT=$(shell pwd)
-export USE_FSC=1
+#export USE_FSC=1
 
 all:
-	make -C ~/bin/spark/
+	make -C ../spark
