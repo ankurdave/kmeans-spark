@@ -1,4 +1,5 @@
 import spark._
+import spark.SparkContext._
 
 object SparkKMeans {
   def main(args: Array[String]) {
@@ -29,7 +30,17 @@ object SparkKMeans {
   }
 
   def kmeans(points: spark.RDD[Point], centroids: Seq[Point], epsilon: Double, sc: SparkContext): Seq[Point] = {
-    val clusters = new PairRDDExtras(points.map(point => KMeansHelper.closestCentroid(centroids, point) -> point)).reduceByKey((pointA, pointB) => (pointA + pointB) / 2)
+    // Assign points into clusters based on their closest centroids,
+    // and take the average of all points in each cluster
+    val clusters =
+      (points
+       .map(point => KMeansHelper.closestCentroid(centroids, point) -> (point, 1))
+       .reduceByKey({
+         case ((ptA, numA), (ptB, numB)) => (ptA + ptB, numA + numB)
+       })
+       .map({
+         case (centroid, (ptSum, numPts)) => centroid -> ptSum / numPts
+       }))
 
     // Recalculate centroids based on their clusters
     // (or leave them alone if they don't have any points in their cluster)
