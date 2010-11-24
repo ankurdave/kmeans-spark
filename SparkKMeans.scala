@@ -35,7 +35,7 @@ object SparkKMeans {
     val clusters =
       (points
        .map(point => KMeansHelper.closestCentroid(centroids, point) -> (point, 1))
-       .reduceByKey({
+       .reduceByKeyToDriver({
          case ((ptA, numA), (ptB, numB)) => (ptA + ptB, numA + numB)
        })
        .map({
