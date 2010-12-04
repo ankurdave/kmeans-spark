@@ -4,14 +4,25 @@ import spark.SparkContext._
 object SparkKMeans {
   def main(args: Array[String]) {
     if (args.length < 2) {
-      System.err.println("Usage: SparkKMeans <pointsFile> <numClusters> <host>")
+      System.err.println("Usage: SparkKMeans <pointsFile> <numClusters> <host> [<startCentroid1X>,<startCentroid1Y> ...]")
       System.exit(-1)
     }
 
-    val sc = new SparkContext(args(2), "SparkKMeans")
+    val pointsFile = args(0)
+    val k = args(1).toInt
+    val host = args(2)
+    val startCentroids =
+      (args
+       .slice(3, 3 + 2 * k)
+       .map(p => {
+	 val ps = p.split(',')
+	 Point(ps(0).toDouble, ps(1).toDouble)
+       }))
+
+    val sc = new SparkContext(host, "SparkKMeans")
 
     // Parse the points from a file into an RDD
-    val points = sc.textFile(args(0)).filter(line => !line.matches("^\\s*#.*")).map(
+    val points = sc.textFile(pointsFile).filter(line => !line.matches("^\\s*#.*")).map(
       line => {
         val parts = line.split("\t").map(_.toDouble)
         new Point(parts(0), parts(1))
@@ -19,8 +30,12 @@ object SparkKMeans {
     ).cache
     System.err.println("Read " + points.count() + " points.")
 
-    // Initialize k random centroids
-    val centroids = Array.fill(args(1).toInt) { Point.random }
+    // Use the given centroids, or initialize k random ones
+    val centroids = 
+      if (startCentroids.length == k)
+	startCentroids
+      else
+	Array.fill(k) { Point.random }
 
     // Start the Spark run
     val resultCentroids = kmeans(points, centroids, 0.1, sc)
