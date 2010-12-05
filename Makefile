@@ -20,13 +20,13 @@ all: jar
 
 jar: build/kmeans-spark.jar
 
-build/kmeans-spark.jar: build/spark.jar build/classes
+build/kmeans-spark.jar: build build/classes build/spark.jar
 	$(COMPILER) -d build/classes -classpath build/classes:$(CLASSPATH) $(SCALA_SOURCES)
 	jar cf build/kmeans-spark.jar -C build/classes .
 
-build/spark.jar:
+build/spark.jar: build
 	make -C $(SPARK_HOME) jar
-	cp $(SPARK_HOME)/{spark,spark-dep}.jar build/
+	cp $(SPARK_HOME)/build/{spark,spark-dep}.jar build/
 
 build:
 	mkdir build/
