@@ -1,0 +1,35 @@
+WARNING: Logging before InitGoogleLogging() is written to STDERR
+I1205 01:41:45.929488  4758 sched.cpp:181] New master at 1@10.202.70.163:5050 with ID:0
+10/12/05 01:41:45 INFO BoundedMemoryCache: BoundedMemoryCache.maxBytes = 3087007744
+10/12/05 01:41:45 INFO MesosScheduler: Registered as framework ID 201012050141-0-0027
+10/12/05 01:41:46 INFO FileInputFormat: Total input paths to process : 1
+10/12/05 01:41:46 INFO SparkContext: Running 2 tasks in parallel
+10/12/05 01:41:46 INFO SimpleJob: Starting task 0:0 as TID 0 on slave 0-0: ip-10-202-71-135.ec2.internal (preferred)
+10/12/05 01:41:46 INFO SimpleJob: Starting task 0:1 as TID 1 on slave 0-1: ip-10-196-103-159.ec2.internal (preferred)
+10/12/05 01:42:07 INFO SimpleJob: Finished TID 1 (progress: 1/2)
+10/12/05 01:42:12 INFO SimpleJob: Finished TID 0 (progress: 2/2)
+10/12/05 01:42:12 INFO SparkContext: Tasks finished in 26.221168028 s
+Read 10000000 points.
+10/12/05 01:42:12 INFO SparkContext: Running 2 tasks in parallel
+10/12/05 01:42:12 INFO SimpleJob: Starting task 1:0 as TID 2 on slave 0-0: ip-10-202-71-135.ec2.internal (preferred)
+10/12/05 01:42:12 INFO SimpleJob: Starting task 1:1 as TID 3 on slave 0-1: ip-10-196-103-159.ec2.internal (preferred)
+10/12/05 01:42:17 INFO SimpleJob: Finished TID 3 (progress: 1/2)
+10/12/05 01:42:18 INFO SimpleJob: Finished TID 2 (progress: 2/2)
+10/12/05 01:42:18 INFO SparkContext: Tasks finished in 5.490562012 s
+Centroids changed by
+	   (1.020119, 0.433392, 2.183411)
+	to ((7.78,40.66), (44.75,35.36), (17.87,7.51))
+10/12/05 01:42:18 INFO SparkContext: Running 2 tasks in parallel
+10/12/05 01:42:18 INFO SimpleJob: Starting task 2:0 as TID 4 on slave 0-0: ip-10-202-71-135.ec2.internal (preferred)
+10/12/05 01:42:18 INFO SimpleJob: Starting task 2:1 as TID 5 on slave 0-1: ip-10-196-103-159.ec2.internal (preferred)
+10/12/05 01:42:21 INFO SimpleJob: Finished TID 5 (progress: 1/2)
+10/12/05 01:42:22 INFO SimpleJob: Finished TID 4 (progress: 2/2)
+10/12/05 01:42:22 INFO SparkContext: Tasks finished in 4.14572333 s
+Centroids changed by
+	   (0.000000, 0.000000, 0.000000)
+	to ((7.78,40.66), (44.75,35.36), (17.87,7.51))
+Final centroids: 
+7.776982	40.661016
+44.751415	35.355014
+17.872132	7.510652
+

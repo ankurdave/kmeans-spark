@@ -1,0 +1,71 @@
+WARNING: Logging before InitGoogleLogging() is written to STDERR
+I1205 01:48:57.147780  5055 sched.cpp:181] New master at 1@10.202.70.163:5050 with ID:0
+10/12/05 01:48:57 INFO MesosScheduler: Registered as framework ID 201012050148-0-0034
+10/12/05 01:48:57 INFO BoundedMemoryCache: BoundedMemoryCache.maxBytes = 3087007744
+10/12/05 01:48:57 INFO FileInputFormat: Total input paths to process : 4
+10/12/05 01:48:57 INFO SparkContext: Running 8 tasks in parallel
+10/12/05 01:48:57 INFO SimpleJob: Starting task 0:0 as TID 0 on slave 0-0: ip-10-202-71-135.ec2.internal (preferred)
+10/12/05 01:48:57 INFO SimpleJob: Starting task 0:1 as TID 1 on slave 0-1: ip-10-196-103-159.ec2.internal (preferred)
+10/12/05 01:48:57 INFO SimpleJob: Starting task 0:2 as TID 2 on slave 0-0: ip-10-202-71-135.ec2.internal (preferred)
+10/12/05 01:48:57 INFO SimpleJob: Starting task 0:3 as TID 3 on slave 0-1: ip-10-196-103-159.ec2.internal (preferred)
+10/12/05 01:49:12 INFO SimpleJob: Finished TID 3 (progress: 1/8)
+10/12/05 01:49:12 INFO SimpleJob: Starting task 0:4 as TID 4 on slave 0-1: ip-10-196-103-159.ec2.internal (preferred)
+10/12/05 01:49:12 INFO SimpleJob: Finished TID 1 (progress: 2/8)
+10/12/05 01:49:12 INFO SimpleJob: Starting task 0:5 as TID 5 on slave 0-1: ip-10-196-103-159.ec2.internal (preferred)
+10/12/05 01:49:13 INFO SimpleJob: Finished TID 5 (progress: 3/8)
+10/12/05 01:49:13 INFO SimpleJob: Starting task 0:6 as TID 6 on slave 0-1: ip-10-196-103-159.ec2.internal (preferred)
+10/12/05 01:49:33 INFO SimpleJob: Finished TID 0 (progress: 4/8)
+10/12/05 01:49:33 INFO SimpleJob: Starting task 0:7 as TID 7 on slave 0-0: ip-10-202-71-135.ec2.internal (preferred)
+10/12/05 01:49:33 INFO SimpleJob: Finished TID 2 (progress: 5/8)
+10/12/05 01:49:38 INFO SimpleJob: Finished TID 4 (progress: 6/8)
+10/12/05 01:49:38 INFO SimpleJob: Finished TID 6 (progress: 7/8)
+10/12/05 01:49:45 INFO SimpleJob: Finished TID 7 (progress: 8/8)
+10/12/05 01:49:45 INFO SparkContext: Tasks finished in 47.877277636 s
+Read 40000000 points.
+10/12/05 01:49:45 INFO SparkContext: Running 8 tasks in parallel
+10/12/05 01:49:45 INFO SimpleJob: Starting task 1:0 as TID 8 on slave 0-0: ip-10-202-71-135.ec2.internal (preferred)
+10/12/05 01:49:45 INFO SimpleJob: Starting task 1:1 as TID 9 on slave 0-1: ip-10-196-103-159.ec2.internal (preferred)
+10/12/05 01:49:45 INFO SimpleJob: Starting task 1:2 as TID 10 on slave 0-0: ip-10-202-71-135.ec2.internal (preferred)
+10/12/05 01:49:45 INFO SimpleJob: Starting task 1:3 as TID 11 on slave 0-1: ip-10-196-103-159.ec2.internal (preferred)
+10/12/05 01:49:50 INFO SimpleJob: Finished TID 11 (progress: 1/8)
+10/12/05 01:49:50 INFO SimpleJob: Starting task 1:4 as TID 12 on slave 0-1: ip-10-196-103-159.ec2.internal (preferred)
+10/12/05 01:49:50 INFO SimpleJob: Finished TID 9 (progress: 2/8)
+10/12/05 01:49:50 INFO SimpleJob: Starting task 1:5 as TID 13 on slave 0-1: ip-10-196-103-159.ec2.internal (preferred)
+10/12/05 01:49:53 INFO SimpleJob: Finished TID 8 (progress: 3/8)
+10/12/05 01:49:53 INFO SimpleJob: Starting task 1:7 as TID 14 on slave 0-0: ip-10-202-71-135.ec2.internal (preferred)
+10/12/05 01:49:54 INFO SimpleJob: Finished TID 10 (progress: 4/8)
+10/12/05 01:49:54 INFO SimpleJob: Finished TID 13 (progress: 5/8)
+10/12/05 01:49:54 INFO SimpleJob: Starting task 1:6 as TID 15 on slave 0-1: ip-10-196-103-159.ec2.internal (preferred)
+10/12/05 01:49:56 INFO SimpleJob: Finished TID 14 (progress: 6/8)
+10/12/05 01:49:58 INFO SimpleJob: Finished TID 12 (progress: 7/8)
+10/12/05 01:50:00 INFO SimpleJob: Finished TID 15 (progress: 8/8)
+10/12/05 01:50:00 INFO SparkContext: Tasks finished in 14.852692258 s
+Centroids changed by
+	   (1.020119, 0.433392, 2.183411)
+	to ((7.78,40.66), (44.75,35.36), (17.87,7.51))
+10/12/05 01:50:00 INFO SparkContext: Running 8 tasks in parallel
+10/12/05 01:50:00 INFO SimpleJob: Starting task 2:0 as TID 16 on slave 0-0: ip-10-202-71-135.ec2.internal (preferred)
+10/12/05 01:50:00 INFO SimpleJob: Starting task 2:1 as TID 17 on slave 0-1: ip-10-196-103-159.ec2.internal (preferred)
+10/12/05 01:50:00 INFO SimpleJob: Starting task 2:2 as TID 18 on slave 0-0: ip-10-202-71-135.ec2.internal (preferred)
+10/12/05 01:50:00 INFO SimpleJob: Starting task 2:3 as TID 19 on slave 0-1: ip-10-196-103-159.ec2.internal (preferred)
+10/12/05 01:50:04 INFO SimpleJob: Finished TID 19 (progress: 1/8)
+10/12/05 01:50:04 INFO SimpleJob: Starting task 2:4 as TID 20 on slave 0-1: ip-10-196-103-159.ec2.internal (preferred)
+10/12/05 01:50:04 INFO SimpleJob: Finished TID 17 (progress: 2/8)
+10/12/05 01:50:04 INFO SimpleJob: Starting task 2:5 as TID 21 on slave 0-1: ip-10-196-103-159.ec2.internal (preferred)
+10/12/05 01:50:08 INFO SimpleJob: Finished TID 21 (progress: 3/8)
+10/12/05 01:50:08 INFO SimpleJob: Starting task 2:6 as TID 22 on slave 0-1: ip-10-196-103-159.ec2.internal (preferred)
+10/12/05 01:50:08 INFO SimpleJob: Finished TID 16 (progress: 4/8)
+10/12/05 01:50:08 INFO SimpleJob: Starting task 2:7 as TID 23 on slave 0-0: ip-10-202-71-135.ec2.internal (preferred)
+10/12/05 01:50:08 INFO SimpleJob: Finished TID 18 (progress: 5/8)
+10/12/05 01:50:11 INFO SimpleJob: Finished TID 23 (progress: 6/8)
+10/12/05 01:50:12 INFO SimpleJob: Finished TID 20 (progress: 7/8)
+10/12/05 01:50:14 INFO SimpleJob: Finished TID 22 (progress: 8/8)
+10/12/05 01:50:14 INFO SparkContext: Tasks finished in 14.376864794 s
+Centroids changed by
+	   (0.000000, 0.000000, 0.000000)
+	to ((7.78,40.66), (44.75,35.36), (17.87,7.51))
+Final centroids: 
+7.776982	40.661016
+44.751415	35.355014
+17.872132	7.510652
+
