@@ -19,7 +19,7 @@ object SparkKMeans {
 	 Point(ps(0).toDouble, ps(1).toDouble)
        }))
 
-    val sc = new SparkContext(host, "SparkKMeans", jars = List("build/kmeans-spark.jar"))
+    val sc = new SparkContext(host, "SparkKMeans")
 
     // Parse the points from a file into an RDD
     val points = sc.textFile(pointsFile).filter(line => !line.matches("^\\s*#.*")).map(

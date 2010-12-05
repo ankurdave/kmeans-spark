@@ -33,9 +33,7 @@ fi
 export JAVA_OPTS
 
 # Build up classpath
-for jar in build/*.jar; do
-    CLASSPATH+=:$jar
-done
+CLASSPATH="build/kmeans-spark.jar:build/spark.jar:build/spark-dep.jar"
 export CLASSPATH # Needed for spark-shell
 
 if [ -n "$SCALA_HOME" ]; then
