@@ -20,7 +20,7 @@ all: jar
 
 jar: build/kmeans-spark.jar
 
-build/kmeans-spark.jar: build build/classes build/spark.jar
+build/kmeans-spark.jar: build build/classes build/spark.jar $(SCALA_SOURCES)
 	$(COMPILER) -d build/classes -classpath build/classes:$(CLASSPATH) $(SCALA_SOURCES)
 	jar cf build/kmeans-spark.jar -C build/classes .
 
