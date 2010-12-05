@@ -1,4 +1,4 @@
-export SPARK_HOME=/work/ankurd/spark
+export SPARK_HOME=/root/spark
 
 SCALA_SOURCES = *.scala
 CLASSPATH = build/spark.jar:build/spark-dep.jar
