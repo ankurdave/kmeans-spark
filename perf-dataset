@@ -42,7 +42,5 @@ do
   done
 done
 
-read -p "About to destroy the cluster. Continue?"
-
 echo "Ending experiment"
 echo y | mesos-ec2 --key-pair=$KEYPAIR --identity-file=$KEYPAIRFILE destroy $CLUSTERNAME

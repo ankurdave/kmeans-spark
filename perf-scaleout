@@ -41,8 +41,6 @@ do
     ssh -i $KEYPAIRFILE root@$MASTER "source ~/.profile; cd kmeans-spark; ./run SparkKMeans $POINTFILE 3 $MESOSMASTER 7,40 45,35 20,8" 2>&1 | tee $LOGDIR/$manip-$trial.log
   done
 
-  read -p "About to destroy the cluster. Continue?"
-
   echo "Ending performance run..."
   echo y | mesos-ec2 --key-pair=$KEYPAIR --identity-file=$KEYPAIRFILE destroy $CLUSTERNAME
 done
