@@ -31,11 +31,12 @@ object SparkKMeans {
     System.err.println("Read " + points.count() + " points.")
 
     // Use the given centroids, or initialize k random ones
-    val centroids = 
+    val centroids = (
       if (startCentroids.length == k)
 	startCentroids
       else
 	Array.fill(k) { Point.random }
+    )
 
     // Start the Spark run
     val resultCentroids = kmeans(points, centroids, 0.1, sc)

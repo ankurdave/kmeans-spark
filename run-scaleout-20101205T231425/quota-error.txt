@@ -1,0 +1,80 @@
+Number of slaves: 16
+Launching cluster...
+Setting up security groups...
+Checking for running cluster...
+Launching instances...
+ERROR:boto:400 Bad Request
+ERROR:boto:<?xml version="1.0" encoding="UTF-8"?>
+<Response><Errors><Error><Code>InstanceLimitExceeded</Code><Message>Your quota allows for 11 more running instance(s). You requested at least 16</Message></Error></Errors><RequestID>82c2f035-1bb5-49e8-abee-f0397b31d26e</RequestID></Response>
+Traceback (most recent call last):
+  File "./mesos_ec2.py", line 477, in <module>
+    main()
+  File "./mesos_ec2.py", line 384, in main
+    conn, opts, cluster_name)
+  File "./mesos_ec2.py", line 193, in launch_cluster
+    block_device_map = block_map)
+  File "/work/ankurd/mesos/third_party/boto-2.0b2/boto/ec2/image.py", line 207, in run
+    placement_group)
+  File "/work/ankurd/mesos/third_party/boto-2.0b2/boto/ec2/connection.py", line 502, in run_instances
+    return self.get_object('RunInstances', params, Reservation, verb='POST')
+  File "/work/ankurd/mesos/third_party/boto-2.0b2/boto/connection.py", line 648, in get_object
+    raise self.ResponseError(response.status, response.reason, body)
+boto.exception.EC2ResponseError: EC2ResponseError: 400 Bad Request
+<?xml version="1.0" encoding="UTF-8"?>
+<Response><Errors><Error><Code>InstanceLimitExceeded</Code><Message>Your quota allows for 11 more running instance(s). You requested at least 16</Message></Error></Errors><RequestID>82c2f035-1bb5-49e8-abee-f0397b31d26e</RequestID></Response>
+Master public hostname: ERROR: Could not find any existing cluster
+Master Mesos PID:
+Generating point file...
+ssh: Could not resolve hostname ERROR:: Name or service not known
+Starting performance run...
+Trial 1
+ssh: Could not resolve hostname ERROR:: Name or service not known
+Trial 2
+ssh: Could not resolve hostname ERROR:: Name or service not known
+Trial 3
+ssh: Could not resolve hostname ERROR:: Name or service not known
+Ending performance run...
+Are you sure you want to destroy the cluster KMeans?
+ALL DATA ON ALL NODES WILL BE LOST!!
+Destroy cluster KMeans (y/N): Searching for existing cluster KMeans...
+ERROR: Could not find any existing cluster
+Number of slaves: 32
+Launching cluster...
+Setting up security groups...
+Checking for running cluster...
+Launching instances...
+ERROR:boto:400 Bad Request
+ERROR:boto:<?xml version="1.0" encoding="UTF-8"?>
+<Response><Errors><Error><Code>InstanceLimitExceeded</Code><Message>Your quota allows for 13 more running instance(s). You requested at least 32</Message></Error></Errors><RequestID>7339a25e-26e1-41c5-8a41-e6c0b215be2f</RequestID></Response>
+Traceback (most recent call last):
+  File "./mesos_ec2.py", line 477, in <module>
+    main()
+  File "./mesos_ec2.py", line 384, in main
+    conn, opts, cluster_name)
+  File "./mesos_ec2.py", line 193, in launch_cluster
+    block_device_map = block_map)
+  File "/work/ankurd/mesos/third_party/boto-2.0b2/boto/ec2/image.py", line 207, in run
+    placement_group)
+  File "/work/ankurd/mesos/third_party/boto-2.0b2/boto/ec2/connection.py", line 502, in run_instances
+    return self.get_object('RunInstances', params, Reservation, verb='POST')
+  File "/work/ankurd/mesos/third_party/boto-2.0b2/boto/connection.py", line 648, in get_object
+    raise self.ResponseError(response.status, response.reason, body)
+boto.exception.EC2ResponseError: EC2ResponseError: 400 Bad Request
+<?xml version="1.0" encoding="UTF-8"?>
+<Response><Errors><Error><Code>InstanceLimitExceeded</Code><Message>Your quota allows for 13 more running instance(s). You requested at least 32</Message></Error></Errors><RequestID>7339a25e-26e1-41c5-8a41-e6c0b215be2f</RequestID></Response>
+Master public hostname: ERROR: Could not find any existing cluster
+Master Mesos PID:
+Generating point file...
+ssh: Could not resolve hostname ERROR:: Name or service not known
+Starting performance run...
+Trial 1
+ssh: Could not resolve hostname ERROR:: Name or service not known
+Trial 2
+ssh: Could not resolve hostname ERROR:: Name or service not known
+Trial 3
+ssh: Could not resolve hostname ERROR:: Name or service not known
+Ending performance run...
+Are you sure you want to destroy the cluster KMeans?
+ALL DATA ON ALL NODES WILL BE LOST!!
+Destroy cluster KMeans (y/N): Searching for existing cluster KMeans...
+ERROR: Could not find any existing cluster
