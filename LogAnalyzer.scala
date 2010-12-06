@@ -19,6 +19,7 @@ object LogAnalyzer {
       for {
 	logfile <- new File(logdir).listFiles
 	if !logfile.isDirectory
+	if (logfile.getName match { case LogFileName(_, _) => true; case _ => false })
 	LogFileName(manip, trial) = logfile.getName
 	src = Source.fromFile(logfile)
 	line <- src.getLines.filter(_.matches(TaskTimeEntry.toString)).drop(1).toTraversable
