@@ -28,7 +28,7 @@ build/kmeans-spark.jar: build/spark.jar $(SCALA_SOURCES)
 build/spark.jar:
 	make -C $(SPARK_HOME) jar
 	mkdir -p build
-	cp $(SPARK_HOME)/build/{spark,spark-dep}.jar build/
+	cp $(SPARK_HOME)/build/spark.jar $(SPARK_HOME)/build/spark-dep.jar build/
 
 
 default: all
