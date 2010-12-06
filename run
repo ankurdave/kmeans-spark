@@ -1,6 +1,6 @@
 #!/bin/bash
 
-FWDIR=/work/ankurd/spark
+FWDIR=/root/spark
 
 # Export this as SPARK_HOME
 export SPARK_HOME="$FWDIR"
