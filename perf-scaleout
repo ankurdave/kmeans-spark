@@ -3,22 +3,23 @@
 DATE=$(date +%Y%m%dT%H%M%S)
 MANIPULATIONS=5
 TRIALS=3
-LOGDIR=run-$DATE
+LOGDIR=run-scaleout-$DATE
 KEYPAIR=Mesos
 KEYPAIRFILE=/work/ankurd/keys/Mesos.pem
 AWSKEYFILE=/work/ankurd/keys/env.sh
 INSTANCETYPE=m1.large
 ZONE=us-east-1d
 CLUSTERNAME=KMeans
+NUMPOINTS=100000000
 
 mkdir -p $LOGDIR
 
 source $AWSKEYFILE
 
 echo "Starting experiment"
-for manip in $(seq 0 $(expr $MANIPULATIONS - 1))
+for manip in $(seq 1 $MANIPULATIONS)
 do
-  let NUMSLAVES=2 ** $manip
+  let NUMSLAVES=2**$manip
   echo "Number of slaves: $NUMSLAVES"
   
   echo "Launching cluster..."
@@ -30,7 +31,7 @@ do
   echo "Master Mesos PID: $MESOSMASTER"
 
   echo "Generating point file..."
-  ssh -i $KEYPAIRFILE root@$MASTER 'source ~/.profile; cd kmeans-spark; ./run KMeansDataGenerator 3 10000000 1 > pts.dat; ../hadoop-0.20.2/bin/hadoop fs -put pts.dat /'
+  ssh -i $KEYPAIRFILE root@$MASTER "source ~/.profile; cd kmeans-spark; ./run KMeansDataGenerator 3 $NUMPOINTS 1 > pts.dat; ../hadoop-0.20.2/bin/hadoop fs -put pts.dat /"
   export POINTFILE=hdfs://$MASTER:9000/pts.dat
 
   echo "Starting performance run..."
@@ -39,4 +40,9 @@ do
     echo "Trial $trial"
     ssh -i $KEYPAIRFILE root@$MASTER "source ~/.profile; cd kmeans-spark; ./run SparkKMeans $POINTFILE 3 $MESOSMASTER 7,40 45,35 20,8" 2>&1 | tee $LOGDIR/$manip-$trial.log
   done
+
+  read -p "About to destroy the cluster. Continue?"
+
+  echo "Ending performance run..."
+  echo y | mesos-ec2 --key-pair=$KEYPAIR --identity-file=$KEYPAIRFILE destroy $CLUSTERNAME
 done

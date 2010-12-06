@@ -1,20 +1,48 @@
 #!/bin/bash
 
-export POINTFILE=hdfs://ec2-184-72-87-26.compute-1.amazonaws.com:9000/1e7.dat
-MESOSMASTER=1@10.202.70.163:5050
 DATE=$(date +%Y%m%dT%H%M%S)
 MANIPULATIONS=5
 TRIALS=3
-LOGDIR=run-$DATE
+LOGDIR=run-dataset-$DATE
+KEYPAIR=Mesos
+KEYPAIRFILE=/work/ankurd/keys/Mesos.pem
+AWSKEYFILE=/work/ankurd/keys/env.sh
+INSTANCETYPE=m1.large
+ZONE=us-east-1d
+CLUSTERNAME=KMeans
+NUMSLAVES=2
+BASENUMPOINTS=10000000
 
-mkdir $LOGDIR
+mkdir -p $LOGDIR
 
+source $AWSKEYFILE
+
+echo "Launching cluster..."
+#mesos-ec2 --slaves=$NUMSLAVES --key-pair=$KEYPAIR --identity-file=$KEYPAIRFILE --instance-type=$INSTANCETYPE --zone=$ZONE launch $CLUSTERNAME
+
+MASTER=$(mesos-ec2 -k $KEYPAIR -i $KEYPAIRFILE get-master $CLUSTERNAME | tail -n 1)
+MESOSMASTER=$(curl http://$MASTER:8080 2>/dev/null | perl -ne 'print $1 if /^PID: (.*)<br \/>/')
+echo "Master public hostname: $MASTER"
+echo "Master Mesos PID: $MESOSMASTER"
+
+echo "Generating point file..."
+ssh -i $KEYPAIRFILE root@$MASTER "source ~/.profile; cd kmeans-spark; ./run KMeansDataGenerator 3 $BASENUMPOINTS 1 > pts.dat; ../hadoop-0.20.2/bin/hadoop fs -put pts.dat /"
+export POINTFILE=hdfs://$MASTER:9000/pts.dat
+
+echo "Starting experiment"
 for manip in $(seq 0 $(expr $MANIPULATIONS - 1))
 do
-    export manip
-    POINTFILEREPEATED=$(perl -e 'print join(",", ($ENV{"POINTFILE"}) x (2 ** $ENV{"manip"}))')
-    for trial in $(seq 1 $TRIALS)
-    do
-	./run SparkKMeans $POINTFILEREPEATED 3 $MESOSMASTER 7,40 45,35 20,8 2>&1 | tee $LOGDIR/$manip-$trial.log
-    done
+  export manip
+  POINTFILEREPEATED=$(perl -e 'print join(",", ($ENV{"POINTFILE"}) x (2 ** $ENV{"manip"}))')
+
+  for trial in $(seq 1 $TRIALS)
+  do
+    echo "Trial $trial"
+    ssh -i $KEYPAIRFILE root@$MASTER "source ~/.profile; cd kmeans-spark; ./run SparkKMeans $POINTFILEREPEATED 3 $MESOSMASTER 7,40 45,35 20,8" 2>&1 | tee $LOGDIR/$manip-$trial.log
+  done
 done
+
+read -p "About to destroy the cluster. Continue?"
+
+echo "Ending experiment"
+echo y | mesos-ec2 --key-pair=$KEYPAIR --identity-file=$KEYPAIRFILE destroy $CLUSTERNAME
