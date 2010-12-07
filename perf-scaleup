@@ -2,18 +2,26 @@
 
 source common-options.sh
 
-MANIPULATIONS=5
-LOGDIR=run-scaleout-$DATE
-INSTANCETYPE=m1.large
-MEMORY=6500m
+MAXINSTANCETYPEINDEX=3
+INSTANCETYPES[0]='m1.large'
+INSTANCETYPES[1]='m1.xlarge'
+INSTANCETYPES[2]='m2.xlarge'
+INSTANCETYPES[3]='c1.xlarge'
+MEMORYS[0]='6500m'
+MEMORYS[1]='14g'
+MEMORYS[2]='16g'
+MEMORYS[3]='6g'
+LOGDIR=run-scaleup-$DATE
 NUMPOINTS=100000000
+NUMSLAVES=2
 
 echo "Starting experiment..."
-for manip in $(seq 1 $MANIPULATIONS)
+for manip in $(seq 0 $MAXINSTANCETYPEINDEX)
 do
-  let NUMSLAVES=2**$manip
-  echo "Number of slaves: $NUMSLAVES"
-  
+  INSTANCETYPE=${INSTANCETYPES[$manip]}
+  MEMORY=${MEMORYS[$manip]}
+  echo "Using instance type $INSTANCETYPE with $MEMORY memory"
+
   source init-cluster.sh
   
   echo "Starting performance run..."

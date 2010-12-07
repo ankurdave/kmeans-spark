@@ -1,0 +1,38 @@
+#!/bin/bash
+
+source common-options.sh
+
+MAXCACHETYPEINDEX=2
+CACHETYPES[0]='BoundedMemoryCache'
+CACHETYPES[1]='WeakReferenceCache'
+CACHETYPES[2]='SoftReferenceCache'
+LOGDIR=run-cachesize-$DATE
+INSTANCETYPE=m1.large
+MEMORY=6500m
+NUMPOINTS=100000000
+NUMSLAVES=2
+
+source init-cluster.sh
+
+echo "Starting experiment..."
+for manip in $(seq 0 $MAXCACHETYPEINDEX)
+do
+    CACHETYPE=${CACHETYPES[$manip]}
+    echo "Using cache type $CACHETYPE"
+    ssh -i $KEYPAIRFILE root@$MASTER \
+	"echo 'export SPARK_JAVA_OPTS=\"-Dspark.cache.class=spark.$CACHETYPE\"' >> /root/spark/conf/spark-env.sh" | sed 's/^/    /'
+
+    echo "Starting performance run..."
+    for trial in $(seq 1 $TRIALS)
+    do
+        echo "Trial $trial..."
+        ssh -i $KEYPAIRFILE root@$MASTER \
+            "source ~/.profile; \
+            cd kmeans-spark; \
+            ./run SparkKMeans $POINTFILE 3 $MESOSMASTER 7,40 45,35 20,8"
+            2>&1 | tee $LOGDIR/$manip-$trial.log 2>&1 | sed 's/^/    /'
+    done
+
+    echo "Ending performance run..."
+    echo y | mesos-ec2 --key-pair=$KEYPAIR --identity-file=$KEYPAIRFILE destroy $CLUSTERNAME 2>&1 | sed 's/^/    /'
+done
