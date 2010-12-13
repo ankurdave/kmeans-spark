@@ -32,7 +32,7 @@ do
 	"source ~/.profile; \
 	cd kmeans-spark; \
 	./run SparkKMeans $POINTFILE 3 $MESOSMASTER 7,40 45,35 20,8" \
-	2>&1 | tee $LOGDIR/$manip-$trial.log 2>&1 | sed 's/^/    /'
+	2>&1 | tee $LOGDIR/$manip-$trial.log
   done
 
   echo "Ending performance run..."

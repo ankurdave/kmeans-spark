@@ -20,7 +20,7 @@ do
     CACHETYPE=${CACHETYPES[$manip]}
     echo "Using cache type $CACHETYPE"
     ssh -i $KEYPAIRFILE root@$MASTER \
-	"echo 'export SPARK_JAVA_OPTS=\"-Dspark.cache.class=spark.$CACHETYPE\"' >> /root/spark/conf/spark-env.sh" | sed 's/^/    /'
+	"echo 'export SPARK_JAVA_OPTS=\"-Dspark.cache.class=spark.$CACHETYPE\"' >> /root/spark/conf/spark-env.sh"
 
     echo "Starting performance run..."
     for trial in $(seq 1 $TRIALS)
@@ -30,9 +30,9 @@ do
             "source ~/.profile; \
             cd kmeans-spark; \
             ./run SparkKMeans $POINTFILE 3 $MESOSMASTER 7,40 45,35 20,8"
-            2>&1 | tee $LOGDIR/$manip-$trial.log 2>&1 | sed 's/^/    /'
+            2>&1 | tee $LOGDIR/$manip-$trial.log
     done
 
     echo "Ending performance run..."
-    echo y | mesos-ec2 --key-pair=$KEYPAIR --identity-file=$KEYPAIRFILE destroy $CLUSTERNAME 2>&1 | sed 's/^/    /'
+    echo y | mesos-ec2 --key-pair=$KEYPAIR --identity-file=$KEYPAIRFILE destroy $CLUSTERNAME
 done

@@ -6,4 +6,4 @@ KEYPAIR=Mesos
 KEYPAIRFILE=/work/ankurd/keys/Mesos.pem
 AWSKEYFILE=/work/ankurd/keys/env.sh
 ZONE=us-east-1d
-CLUSTERNAME=KMeans
+CLUSTERNAME=${PERF_CLUSTERNAME:-KMeans}
