@@ -1,0 +1,35 @@
+kmeans-spark - a simple implementation of k-means clustering on the Spark cluster computing framework
+
+COMPILING
+=========
+
+Edit the Makefile and run to set SPARK_HOME and FWDIR appropriately. Then run
+     make
+
+This builds Spark along with kmeans-spark in a pretty hacky fashion. At some point it would be good to move to sbt.
+
+RUNNING ON SPARK
+================
+
+Use the following command:
+    ./run SparkKMeans <pointsFile> <numClusters> <host> [<startCentroid1X>,<startCentroid1Y>, ...]
+
+pointsFile - the location of the input dataset. Any path that SparkContext.textFile understands is fine, including hdfs paths. This file should be formatted with one 2D point per line using the following format string: "%f\t%f\n".format(point.x, point.y). Lines beginning with # will be ignored.
+
+numClusters - an integer representing the number of clusters to use (the value of k).
+
+host - the Mesos host to run on, or "local" to run locally.
+startCentroid1{X,Y} - optionally, the initial centroid values.
+
+GENERATING POINTS
+=================
+
+To generate random points distributed randomly in clusters, use the following command:
+    ./run KMeansDataGenerator <numClusters> <numPoints> <pointSpread>
+This will generate the points data and send it to standard output. It will also print the generated centroids at the beginning of the file, preceded by # so they are ignored by SparkKMeans.
+
+numClusters - the number of clusters to generate.
+
+numPoints - the number of random points to generate. Each point is generated close to the centroid of a random cluster, randomly perturbed according to a Gaussian distribution.
+
+pointSpread - the Gaussian spread of points around centroids.
